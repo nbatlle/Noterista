@@ -10,5 +10,6 @@ Goals:
 3.  Implement Note class.
 4.  Develop GTD functionality.
 5.  Streamline UI/UX.
-6.  Consider GUI version, web version, etc.
+6.  Consider other features such as tags, search function, enabling images/links/etc.
+7.  Consider GUI version, web version, etc.
 
