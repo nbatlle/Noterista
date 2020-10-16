@@ -35,10 +35,13 @@ try:
   for row in rows:
     note = list(row)
     noteList.append(note)
-    print(row)
+    print(note)
 except Error as e:
   print(e)
 
+lastId = noteList[-1][0]
+nextId = lastId + 1
+print("The next ID # for a note will be " + str(nextId))
 
 # CRUD begins here
 # use lists (not tuples as it says in notes below) instead of dictionaries for now
@@ -65,15 +68,19 @@ def newCard():
   print("welcome to the newCard() function")
   print("enter a note now:")
   newText = input()
-  newId = len(noteList) 
 
   """ changing dictionary to tuple
   note = {"noteId": newId, "noteText": newText, "deleteMarker": 0}
   """
 
-  note = (newId, newText, 0)
+  global nextId
+  note = [nextId, newText, 0]
   noteList.append(note)
+  cur.execute("INSERT INTO notes VALUES (?,?,?)", note) 
+  conn.commit()
   print("new note created")
+  nextId += 1
+  print("next ID is", nextId)
 
 def editCard():
   print("welcome to the editCard() function")
@@ -95,6 +102,8 @@ def editCard():
         print("enter the text to replace the existing note:")
         newText = input()
         note[1] = newText 
+        cur.execute("UPDATE notes SET Note = ? WHERE ID = ?", [newText, noteToEditId])
+        conn.commit()
         print("note #", noteToEditId, "edited")
 
 def deleteCard():
@@ -118,6 +127,8 @@ def deleteCard():
         userInput = input()
         if userInput == 'Y':
           note[2] = 1 
+          cur.execute("UPDATE notes SET DeleteMarker = ? WHERE ID = ?", [1, noteToDeleteId])
+          conn.commit()
         else:
           return
 
