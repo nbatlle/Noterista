@@ -17,11 +17,9 @@ from noteClass import Note
 
 def dbsetup():
   print("connecting to db...")
-  print("")
   conn = dbf.connect('noterista.db')
 
   print("checking notes table...")
-  print("")
   c = dbf.table(conn)
 
   print("reading notes from table...")
@@ -30,12 +28,9 @@ def dbsetup():
   print("here are your notes...")
   for note in Note.noteList:
     note.view()
-    print("")
-  print("the next note will be #", Note.nextId)
-  print("")
 
-  dbstuff = [conn, c]
-  return dbstuff
+  dbStuff = [conn, c]
+  return dbStuff
 
 
 ###
@@ -60,13 +55,18 @@ def nextCommand():
   return input()
 
 ###
+# starting w/ newNote, and going through remaining crud functions:
+# move user input prompt from crud function to main
+# in order to facilitate streamlining of UI
+# ie newNote does not need to request user input b/c it has already been provided
+###
 
-def newNote(conn, c):
-  print("Enter a note:")
-  userInput = input()
+def newNote(conn, c, noteText):
+  #print("Enter a note:")
+  #userInput = input()
   noteId = Note.nextId
-  note = Note(noteId, userInput)
-  dbf.newNote(conn, c, noteId, userInput)
+  note = Note(noteId, noteText)
+  dbf.newNote(conn, c, noteId, noteText)
 
 ###
 
@@ -89,7 +89,7 @@ def deleteNote(conn, c):
     if noteToDeleteId == note.idNum:
       print("Are you sure you want to delete note #", noteToDeleteId, "?")
       print("Enter Y or N:") 
-      if input() == "Y":
+      if input() in ['y', 'Y']:
         note.delete()
         dbf.deleteNote(conn, c, noteToDeleteId)
 
@@ -97,11 +97,15 @@ def deleteNote(conn, c):
 
 def viewNotes():
   for note in Note.noteList:
-    if note.delMarker == 0:
-      note.view()
+    note.view()
+
+
+###
+
+def printNotes():
   for note in Note.noteList:
     note.print()
-#keep second for loop for now, useful for testing
+
 
 ###
 
@@ -115,30 +119,42 @@ def commandOptions():
 
 def main():
 
-  dbstuff = dbsetup()
-  conn = dbstuff[0]
-  c = dbstuff[1]
+  dbStuff = dbsetup()
+  conn = dbStuff[0]
+  c = dbStuff[1]
 
   userInput = begin()
   while True:
-    if userInput == 'N':
-      newNote(conn,c)
+    if userInput in ['n', 'N']:
+      print("Enter a note:")
+      noteText = input()
+      newNote(conn,c, noteText)
       userInput = nextCommand() 
-    elif userInput == 'E':
+    elif userInput in ['e', 'E']:
       editNote(conn,c)
       userInput = nextCommand()
-    elif userInput == 'D':
+    elif userInput in ['d', 'D']:
       deleteNote(conn,c)
       userInput = nextCommand()
-    elif userInput == 'V':
+    elif userInput in ['v', 'V']:
       viewNotes()
       userInput = nextCommand()
-    elif userInput == 'C':
+    elif userInput in ['p', 'P']:
+      printNotes()
+      userInput = nextCommand()
+    elif userInput in ['c', 'C']:
       commandOptions()
       userInput = nextCommand()
-    elif userInput == 'Q':
+    elif userInput in ['q', 'Q', 'x', 'X']:
       break
-     
+    #fast new note:
+    else:
+      newNote(conn, c, userInput)
+      userInput = nextCommand()
+    #add fast edit & fast delete below 
+    #actually, add them above fast new note 
+    #fast newnote should be the elif statement
+ 
   print("program exited by user")
 
 

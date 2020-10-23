@@ -43,17 +43,17 @@ def tableToNote(c):
     rows = c.fetchall()
     for row in rows:
       # print lines are for testing/clarification
-      print("from table: ")
-      print(row)
-      print("")
-      print("to note: ")
+      # print("from table: ")
+      # print(row)
+      # print("")
+      # print("to note: ")
       idNum = row[0]
       noteText = row[1]
       delMarker = row[2]
       note = Note(idNum, noteText, delMarker)
-      note.view()
-      print("here is your noteList: ", Note.noteList)
-      print("here is your nextId: ", Note.nextId)
+      # note.view()
+      # print("here is your noteList: ", Note.noteList)
+      # print("here is your nextId: ", Note.nextId)
   except Error as e:
     print(e)
 

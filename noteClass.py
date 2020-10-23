@@ -30,19 +30,10 @@ class Note:
 
 
 ###
-# currently view all notes done from main
-# probably makes sense to move that implementation to Note class
-###
-
-  def view(self):
-    print(self.idNum, self.noteText, self.delMarker)
-
-
-###
 
   def edit(self, noteText):
     self.noteText = noteText
-    print("note edited to read ", noteText)
+    print("note edited")
 
 
 ###
@@ -53,13 +44,30 @@ class Note:
 
 
 ###
-# redundant w/ view(), but sometimes the different format is handy
-# keep for now
+# view & print:
+# update calls to both from main() to allow for view/print of a subset of notes (as in v:5-10)
+# view will be user accessible command in final product
+#   only shows relevant attributes - usually id and text
+#   if note is task/project etc this will be noted w/ along w/ relevant attributes
+#   if deleted prints note is deleted 
+# use print for testing, shows all attributes
+#   print() should be accessible via p command, but don't show command in menu
+#   add SQL call to print row attributes from table as well as from notelist, make sure the agree
 ###
+
+  def view(self):
+    if self.delMarker == 0:
+      print(self.idNum, self.noteText)
+    else:
+      print("note #", self.idNum, "has been deleted")
+    # TODO: include relevant task/project attributes when those are implemented
+
 
   def print(self):
     print(self.idNum)
     print(self.noteText)
     print(self.delMarker)
+    # TODO: add new attributes as they are implemented
+    # TODO: SQL call
 
 ###
