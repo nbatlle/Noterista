@@ -70,13 +70,13 @@ def newNote(conn, c, noteText):
 
 ###
 
-def editNote(conn, c):
-  print("Enter the Id of the note to edit:")
-  noteToEditId = int(input())
+def editNote(conn, c, noteToEditId, newText):
+  #print("Enter the Id of the note to edit:")
+  #noteToEditId = int(input())
   for note in Note.noteList:
     if noteToEditId == note.idNum:
-      print("Enter the corrected text:")
-      newText = input()
+      #print("Enter the corrected text:")
+      #newText = input()
       note.edit(newText)
       dbf.editNote(conn, c, noteToEditId, newText) 
 
@@ -131,7 +131,11 @@ def main():
       newNote(conn,c, noteText)
       userInput = nextCommand() 
     elif userInput in ['e', 'E']:
-      editNote(conn,c)
+      print("Enter the Id of the note to edit:")
+      noteToEditId = int(input())
+      print("Enter the corrected text:")
+      newText = input()
+      editNote(conn,c, noteToEditId, newText)
       userInput = nextCommand()
     elif userInput in ['d', 'D']:
       deleteNote(conn,c)
@@ -147,6 +151,26 @@ def main():
       userInput = nextCommand()
     elif userInput in ['q', 'Q', 'x', 'X']:
       break
+    #fast edit:
+    elif (userInput[0] in ['e', 'E']) and (userInput[1] == ':'):
+      print("colon found...")
+      print("parsing after colon...")
+      inputAfterColon = userInput[2:]
+      print(inputAfterColon)
+      if ':' in inputAfterColon:
+        print("found second colon...")
+        print("parsing between colons and after second colon...")
+        numberBetweenColons = int(inputAfterColon[:inputAfterColon.index(':')])
+        textAfterColons = inputAfterColon[inputAfterColon.index(':') + 1:]
+        editNote(conn,c, numberBetweenColons, textAfterColons)
+        userInput = nextCommand()
+      elif int(inputAfterColon) < Note.nextId:
+        print(int(inputAfterColon), "is less than", Note.nextId)
+        #noteToEdit = int(inputAfterColon)
+        print("Enter the corrected text:")
+        #newText = input()
+        editNote(conn,c, int(inputAfterColon), input())
+        userInput = nextCommand()
     #fast new note:
     else:
       newNote(conn, c, userInput)
